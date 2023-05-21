@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="소스 파일">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="헤더 파일">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="리소스 파일">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="EchoClient">
+      <UniqueIdentifier>{a5892a8e-d105-4be8-862c-9d69e24f62da}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{b5573f27-b9a0-4337-b0eb-312269214616}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Desktop\Common\NetClient.cpp">
+      <Filter>include</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Desktop\Common\NetServerSerializeBuffer.cpp">
+      <Filter>include</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Desktop\Common\Parse.cpp">
+      <Filter>include</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Desktop\Common\PreCompile.cpp">
+      <Filter>include</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Desktop\Common\Profiler.cpp">
+      <Filter>include</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Desktop\Common\Ringbuffer.cpp">
+      <Filter>include</Filter>
+    </ClCompile>
+    <ClCompile Include="EchoClient.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Desktop\Common\Log.cpp">
+      <Filter>include</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="EchoClient.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
