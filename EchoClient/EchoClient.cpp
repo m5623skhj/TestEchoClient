@@ -35,6 +35,8 @@ void EchoClient::OnConnectionComplete()
     std::cout << "connected" << std::endl;
 
     CNetServerSerializationBuf& buffer = *CNetServerSerializationBuf::Alloc();
+    UINT id = 1;
+    buffer << id;
     MakeRandomString(buffer);
 
     SendPacket(&buffer);
@@ -43,14 +45,19 @@ void EchoClient::OnConnectionComplete()
 void EchoClient::OnRecv(CNetServerSerializationBuf* OutReadBuf)
 {
     std::string recvBuffer;
-    OutReadBuf->ReadBuffer(const_cast<char*>(recvBuffer.c_str()), beforeSendSize);
+    OutReadBuf->ReadBuffer(const_cast<char*>(recvBuffer.c_str()), 14);
+    //OutReadBuf->ReadBuffer(const_cast<char*>(recvBuffer.c_str()), beforeSendSize);
 
     std::cout << "send : " << echoString << std::endl << "recv : " << recvBuffer << std::endl;
 
-    if (recvBuffer != echoString)
+    if (echoString != "testString")
     {
         g_Dump.Crash();
     }
+    //if (recvBuffer != echoString)
+    //{
+    //    g_Dump.Crash();
+    //}
 
     CNetServerSerializationBuf buffer;
     MakeRandomString(buffer);
@@ -82,9 +89,12 @@ void EchoClient::MakeRandomString(OUT CNetServerSerializationBuf& buffer)
 {
     std::random_device rd;
     std::mt19937 gen(rd());
-    std::uniform_int_distribution<> distr(1, MAX_SEND_SIZE);
+    std::uniform_int_distribution<> distr(10, MAX_SEND_SIZE);
     beforeSendSize = distr(gen);
     echoString = gen_random(beforeSendSize);
 
-    buffer.WriteBuffer(const_cast<char*>(echoString.c_str()), beforeSendSize);
+    //buffer.WriteBuffer(const_cast<char*>(echoString.c_str()), beforeSendSize);
+    std::string t;
+    t = "testString";
+    buffer.WriteBuffer((char*)t.c_str(), t.size());
 }
