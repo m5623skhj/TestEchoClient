@@ -35,8 +35,8 @@ void EchoClient::OnConnectionComplete()
     std::cout << "connected" << std::endl;
 
     CNetServerSerializationBuf& buffer = *CNetServerSerializationBuf::Alloc();
-    UINT id = 1;
-    buffer << id;
+    int inputId = 1;
+    buffer << inputId;
     MakeRandomString(buffer);
 
     SendPacket(&buffer);
@@ -44,25 +44,30 @@ void EchoClient::OnConnectionComplete()
 
 void EchoClient::OnRecv(CNetServerSerializationBuf* OutReadBuf)
 {
-    std::string recvBuffer;
-    OutReadBuf->ReadBuffer(const_cast<char*>(recvBuffer.c_str()), 14);
-    //OutReadBuf->ReadBuffer(const_cast<char*>(recvBuffer.c_str()), beforeSendSize);
-
-    std::cout << "send : " << echoString << std::endl << "recv : " << recvBuffer << std::endl;
-
-    if (echoString != "testString")
+    int outputId;
+    *OutReadBuf >> outputId;
+    if (outputId != 1)
     {
         g_Dump.Crash();
     }
-    //if (recvBuffer != echoString)
-    //{
-    //    g_Dump.Crash();
-    //}
 
-    CNetServerSerializationBuf buffer;
-    MakeRandomString(buffer);
+    char recvStringBuffer[30];
+    ZeroMemory(recvStringBuffer, sizeof(recvStringBuffer));
+    OutReadBuf->ReadBuffer(recvStringBuffer, beforeSendSize);
 
-    SendPacket(&buffer);
+    std::cout << "send : " << echoString << " / " << "recv : " << recvStringBuffer << std::endl;
+
+    if (strcmp(recvStringBuffer, echoString.c_str()) != 0)
+    {
+        g_Dump.Crash();
+    }
+
+    CNetServerSerializationBuf sendBuffer;
+    UINT inputId = 1;
+    sendBuffer << inputId;
+    MakeRandomString(sendBuffer);
+     
+    SendPacket(&sendBuffer);
 }
 
 void EchoClient::OnSend(int sendsize)
@@ -93,8 +98,5 @@ void EchoClient::MakeRandomString(OUT CNetServerSerializationBuf& buffer)
     beforeSendSize = distr(gen);
     echoString = gen_random(beforeSendSize);
 
-    //buffer.WriteBuffer(const_cast<char*>(echoString.c_str()), beforeSendSize);
-    std::string t;
-    t = "testString";
-    buffer.WriteBuffer((char*)t.c_str(), t.size());
+    buffer.WriteBuffer(const_cast<char*>(echoString.c_str()), beforeSendSize);
 }
