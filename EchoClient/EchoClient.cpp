@@ -32,8 +32,6 @@ EchoClient::~EchoClient()
 
 void EchoClient::OnConnectionComplete()
 {
-    std::cout << "connected" << std::endl;
-
     CNetServerSerializationBuf& buffer = *CNetServerSerializationBuf::Alloc();
     int inputId = 1;
     buffer << inputId;
@@ -56,17 +54,17 @@ void EchoClient::OnRecv(CNetServerSerializationBuf* OutReadBuf)
     OutReadBuf->ReadBuffer(recvStringBuffer, beforeSendSize);
 
     std::cout << "send : " << echoString << " / " << "recv : " << recvStringBuffer << std::endl;
+    //if (echoString != recvStringBuffer)
+    //{
+    //    g_Dump.Crash();
+    //}
 
-    if (strcmp(recvStringBuffer, echoString.c_str()) != 0)
-    {
-        g_Dump.Crash();
-    }
-
-    CNetServerSerializationBuf sendBuffer;
+    CNetServerSerializationBuf& sendBuffer = *CNetServerSerializationBuf::Alloc();
     UINT inputId = 1;
     sendBuffer << inputId;
+    //sendBuffer.WriteBuffer(const_cast<char*>(echoString.c_str()), beforeSendSize);
     MakeRandomString(sendBuffer);
-     
+    
     SendPacket(&sendBuffer);
 }
 
