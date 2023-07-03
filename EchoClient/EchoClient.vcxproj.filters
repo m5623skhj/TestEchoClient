@@ -53,5 +53,11 @@
     <ClInclude Include="EchoClient.h">
       <Filter>소스 파일</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\RIOServerTest\RIO_Test\Protocol.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\RIOServerTest\RIO_Test\EnumType.h">
+      <Filter>include</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

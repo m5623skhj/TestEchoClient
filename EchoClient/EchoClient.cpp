@@ -1,16 +1,18 @@
 #include "PreCompile.h"
 #include "EchoClient.h"
 #include <random>
+#include "../../RIOServerTest/RIO_Test/Protocol.h"
+#include "../../RIOServerTest/RIO_Test/EnumType.h"
 
 #define MAX_SEND_SIZE 15
 
-std::string gen_random(const int len) 
+std::wstring gen_random(const int len) 
 {
-    static const char alphanum[] =
-        "0123456789"
-        "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-        "abcdefghijklmnopqrstuvwxyz";
-    std::string tmp_s;
+    static const WCHAR alphanum[] =
+        L"0123456789"
+        L"ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        L"abcdefghijklmnopqrstuvwxyz";
+    std::wstring tmp_s;
     tmp_s.reserve(len);
 
     for (int i = 0; i < len; ++i) {
@@ -33,8 +35,9 @@ EchoClient::~EchoClient()
 void EchoClient::OnConnectionComplete()
 {
     CNetServerSerializationBuf& buffer = *CNetServerSerializationBuf::Alloc();
-    int inputId = 1;
-    buffer << inputId;
+    UINT inputId = static_cast<UINT>(PACKET_ID::CALL_TEST_PROCEDURE_PACKET);
+    int id3 = 6;
+    buffer << inputId << id3;
     MakeRandomString(buffer);
 
     SendPacket(&buffer);
@@ -42,28 +45,32 @@ void EchoClient::OnConnectionComplete()
 
 void EchoClient::OnRecv(CNetServerSerializationBuf* OutReadBuf)
 {
-    int outputId;
+    UINT outputId;
     *OutReadBuf >> outputId;
-    if (outputId != 1)
-    {
-        g_Dump.Crash();
-    }
-
-    char recvStringBuffer[30];
-    ZeroMemory(recvStringBuffer, sizeof(recvStringBuffer));
-    OutReadBuf->ReadBuffer(recvStringBuffer, beforeSendSize);
-
-    std::cout << "send : " << echoString << " / " << "recv : " << recvStringBuffer << std::endl;
-    //if (echoString != recvStringBuffer)
-    //{
-    //    g_Dump.Crash();
-    //}
 
     CNetServerSerializationBuf& sendBuffer = *CNetServerSerializationBuf::Alloc();
-    UINT inputId = 1;
-    sendBuffer << inputId;
-    //sendBuffer.WriteBuffer(const_cast<char*>(echoString.c_str()), beforeSendSize);
-    MakeRandomString(sendBuffer);
+
+    switch (static_cast<PACKET_ID>(outputId))
+    {
+    case PACKET_ID::CALL_TEST_PROCEDURE_PACKET_REPLY:
+    {
+        UINT inputId = static_cast<UINT>(PACKET_ID::CALL_SELECT_TEST_2_PROCEDURE_PACKET);
+        CallSelectTest2ProcedurePacket selectPacket;
+        selectPacket.id = 6;
+
+        sendBuffer << inputId << selectPacket.id;
+    }
+    case PACKET_ID::CALL_SELECT_TEST_2_PROCEDURE_PACKET_REPLY:
+    {
+        UINT inputId = static_cast<UINT>(PACKET_ID::CALL_TEST_PROCEDURE_PACKET);
+     
+        sendBuffer << inputId;
+        MakeRandomString(sendBuffer);
+    }
+    default:
+        g_Dump.Crash();
+        break;
+    }
     
     SendPacket(&sendBuffer);
 }
@@ -93,8 +100,8 @@ void EchoClient::MakeRandomString(OUT CNetServerSerializationBuf& buffer)
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_int_distribution<> distr(10, MAX_SEND_SIZE);
-    beforeSendSize = distr(gen);
-    echoString = gen_random(beforeSendSize);
+    //beforeSendSize = distr(gen);
+    echoString = gen_random(distr(gen));
 
-    buffer.WriteBuffer(const_cast<char*>(echoString.c_str()), beforeSendSize);
+    buffer.WriteBuffer((char*)(echoString.c_str()), sizeof(WCHAR[30]));
 }

@@ -23,6 +23,6 @@ private:
 	void MakeRandomString(OUT CNetServerSerializationBuf& buffer);
 
 private:
-	std::string echoString;
-	int beforeSendSize = 0;
+	std::wstring echoString;
+	//int beforeSendSize = 0;
 };
