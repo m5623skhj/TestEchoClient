@@ -48,7 +48,7 @@ void EchoClient::OnRecv(CNetServerSerializationBuf* OutReadBuf)
     UINT outputId;
     *OutReadBuf >> outputId;
 
-    CNetServerSerializationBuf& sendBuffer = *CNetServerSerializationBuf::Alloc();
+      CNetServerSerializationBuf& sendBuffer = *CNetServerSerializationBuf::Alloc();
 
     switch (static_cast<PACKET_ID>(outputId))
     {
@@ -59,6 +59,7 @@ void EchoClient::OnRecv(CNetServerSerializationBuf* OutReadBuf)
         selectPacket.id = 6;
 
         sendBuffer << inputId << selectPacket.id;
+        break;
     }
     case PACKET_ID::CALL_SELECT_TEST_2_PROCEDURE_PACKET_REPLY:
     {
@@ -66,6 +67,7 @@ void EchoClient::OnRecv(CNetServerSerializationBuf* OutReadBuf)
      
         sendBuffer << inputId;
         MakeRandomString(sendBuffer);
+        break;
     }
     default:
         g_Dump.Crash();
