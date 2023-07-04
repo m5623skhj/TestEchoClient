@@ -48,7 +48,7 @@ void EchoClient::OnRecv(CNetServerSerializationBuf* OutReadBuf)
     UINT outputId;
     *OutReadBuf >> outputId;
 
-      CNetServerSerializationBuf& sendBuffer = *CNetServerSerializationBuf::Alloc();
+    CNetServerSerializationBuf& sendBuffer = *CNetServerSerializationBuf::Alloc();
 
     switch (static_cast<PACKET_ID>(outputId))
     {
@@ -64,7 +64,23 @@ void EchoClient::OnRecv(CNetServerSerializationBuf* OutReadBuf)
     case PACKET_ID::CALL_SELECT_TEST_2_PROCEDURE_PACKET_REPLY:
     {
         UINT inputId = static_cast<UINT>(PACKET_ID::CALL_TEST_PROCEDURE_PACKET);
-     
+        int no = 0;
+        *OutReadBuf >> no;
+        if (no != 6)
+        {
+            g_Dump.Crash();
+        }
+
+        int getLeftSize = OutReadBuf->GetUseSize();
+        std::wstring recvString;
+        recvString.reserve(getLeftSize);
+
+        OutReadBuf->ReadBuffer((char*)recvString.c_str(), getLeftSize);
+        if (recvString.compare(echoString) == false)
+        {
+            g_Dump.Crash();
+        }
+
         sendBuffer << inputId;
         MakeRandomString(sendBuffer);
         break;
