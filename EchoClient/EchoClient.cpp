@@ -24,7 +24,13 @@ std::wstring gen_random(const int len)
 
 EchoClient::EchoClient(const std::wstring& optionFile)
 {
-    Start(optionFile.c_str());
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> dis(1, 1000000000);
+
+    id3 = dis(gen);
+
+    Start(optionFile.c_str()); 
 }
 
 EchoClient::~EchoClient()
@@ -36,7 +42,6 @@ void EchoClient::OnConnectionComplete()
 {
     CNetServerSerializationBuf& buffer = *CNetServerSerializationBuf::Alloc();
     UINT inputId = static_cast<UINT>(PACKET_ID::CALL_TEST_PROCEDURE_PACKET);
-    int id3 = 6;
     buffer << inputId << id3;
     MakeRandomString(buffer);
 
@@ -56,7 +61,7 @@ void EchoClient::OnRecv(CNetServerSerializationBuf* OutReadBuf)
     {
         UINT inputId = static_cast<UINT>(PACKET_ID::CALL_SELECT_TEST_2_PROCEDURE_PACKET);
         CallSelectTest2ProcedurePacket selectPacket;
-        selectPacket.id = 6;
+        selectPacket.id = id3;
 
         sendBuffer << inputId << selectPacket.id;
         break;
@@ -64,10 +69,9 @@ void EchoClient::OnRecv(CNetServerSerializationBuf* OutReadBuf)
     case PACKET_ID::CALL_SELECT_TEST_2_PROCEDURE_PACKET_REPLY:
     {
         UINT inputId = static_cast<UINT>(PACKET_ID::CALL_TEST_PROCEDURE_PACKET);
-        int id3 = 6;
         int no = 0;
         *OutReadBuf >> no;
-        if (no != 6)
+        if (no != id3)
         {
             g_Dump.Crash();
         }

@@ -24,5 +24,5 @@ private:
 
 private:
 	std::wstring echoString;
-	//int beforeSendSize = 0;
+	int id3 = 0;
 };
