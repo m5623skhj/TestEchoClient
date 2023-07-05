@@ -64,6 +64,7 @@ void EchoClient::OnRecv(CNetServerSerializationBuf* OutReadBuf)
     case PACKET_ID::CALL_SELECT_TEST_2_PROCEDURE_PACKET_REPLY:
     {
         UINT inputId = static_cast<UINT>(PACKET_ID::CALL_TEST_PROCEDURE_PACKET);
+        int id3 = 6;
         int no = 0;
         *OutReadBuf >> no;
         if (no != 6)
@@ -81,7 +82,7 @@ void EchoClient::OnRecv(CNetServerSerializationBuf* OutReadBuf)
             g_Dump.Crash();
         }
 
-        sendBuffer << inputId;
+        sendBuffer << inputId << id3;
         MakeRandomString(sendBuffer);
         break;
     }
