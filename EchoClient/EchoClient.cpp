@@ -40,10 +40,16 @@ EchoClient::~EchoClient()
 
 void EchoClient::OnConnectionComplete()
 {
+    /*
     CNetServerSerializationBuf& buffer = *CNetServerSerializationBuf::Alloc();
     UINT inputId = static_cast<UINT>(PACKET_ID::CALL_TEST_PROCEDURE_PACKET);
     buffer << inputId << id3;
     MakeRandomString(buffer);
+    */
+
+    NetBuffer& buffer = *NetBuffer::Alloc();
+    UINT packetId = static_cast<UINT>(PACKET_ID::PING);
+    buffer << packetId;
 
     SendPacket(&buffer);
 }
@@ -53,6 +59,7 @@ void EchoClient::OnRecv(CNetServerSerializationBuf* OutReadBuf)
     UINT outputId;
     *OutReadBuf >> outputId;
 
+    /*
     CNetServerSerializationBuf& sendBuffer = *CNetServerSerializationBuf::Alloc();
 
     switch (static_cast<PACKET_ID>(outputId))
@@ -96,6 +103,19 @@ void EchoClient::OnRecv(CNetServerSerializationBuf* OutReadBuf)
     }
     
     SendPacket(&sendBuffer);
+    */
+
+    if (outputId != static_cast<UINT>(PACKET_ID::PONG))
+    {
+        std::cout << "Invalid packet id" << std::endl;
+        return;
+    }
+
+    NetBuffer& buffer = *NetBuffer::Alloc();
+    UINT packetId = static_cast<UINT>(PACKET_ID::PING);
+    buffer << packetId;
+
+    SendPacket(&buffer);
 }
 
 void EchoClient::OnSend(int sendsize)
